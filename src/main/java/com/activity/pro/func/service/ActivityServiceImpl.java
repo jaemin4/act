@@ -1,8 +1,12 @@
 package com.activity.pro.func.service;
 
 import com.activity.pro.entity.Activity;
+import com.activity.pro.func.domain.request.GetActByCategoryDto;
+import com.activity.pro.func.domain.specification.ActivitySpecification;
 import com.activity.pro.func.repository.ActivityRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -11,6 +15,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ActivityServiceImpl implements ActivityService {
 
     private final ActivityRepository activityRepository;
@@ -48,6 +53,20 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public List<Activity> getAllActivities() {
         return activityRepository.findAll();
+    }
+
+    @Override
+    public List<Activity> getActivityByCategory(GetActByCategoryDto param) {
+        Specification<Activity> spec = (root, query, criteriaBuilder) -> null;
+        log.warn(param.getMainCategory());
+        if (param.getMainCategory() != null) {
+            spec = spec.and(ActivitySpecification.equalMainCategory(param.getMainCategory()));
+        }
+        if (param.getSubCategory() != null) {
+            spec = spec.and(ActivitySpecification.containSubCategory(param.getSubCategory()));
+        }
+
+        return activityRepository.findAll(spec);
     }
 
     // UPDATE
