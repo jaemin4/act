@@ -1,10 +1,11 @@
 package com.activity.pro.entity;
 
+import com.activity.pro.func.domain.request.ActiAdmSaveReqDto;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import jakarta.persistence.*;
 
 @Entity
 @Getter
@@ -17,7 +18,7 @@ public class SubCategory {
     @Column(name = "sub_category_id")
     private Long subCategoryId;
 
-    @Column
+    @Column(nullable = false)
     private String name;
 
     @Builder
@@ -25,14 +26,10 @@ public class SubCategory {
         this.name = name;
     }
 
-    public static SubCategory of(String name) {
+    public static SubCategory subCategoryFromDto(ActiAdmSaveReqDto actiAdmSaveReqDto) {
         return SubCategory.builder()
-                .name(name)
+                .name(String.join(",", actiAdmSaveReqDto.getSubCategory()))
                 .build();
     }
 
-    public void updateSubCategory(String name) {
-        this.name = name;
-    }
 }
-

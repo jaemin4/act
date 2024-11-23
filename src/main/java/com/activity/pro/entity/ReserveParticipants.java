@@ -36,5 +36,17 @@ public class ReserveParticipants {
                 .maxParticipants(maxParticipants)
                 .build();
     }
+
+    public static ReserveParticipants reserveParticipantsFromSaveDto(Integer maxParticipants,Long reserveTimeId){
+        ReserveTime reserveTime = new ReserveTime();
+        reserveTime.setReserveTimeId(reserveTimeId);
+
+        return ReserveParticipants.builder()
+                .reserveTime(reserveTime)
+                .maxParticipants(maxParticipants)
+                .build();
+    }
+
+
 }
 

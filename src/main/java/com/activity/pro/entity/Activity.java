@@ -1,16 +1,14 @@
 package com.activity.pro.entity;
 
 import com.activity.pro.func.domain.request.ActiAdmSaveReqDto;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 //Activity
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "activity")
 public class Activity {
@@ -21,7 +19,7 @@ public class Activity {
     private Long activityId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "business_member_id", nullable = false)
+    @JoinColumn(name = "business_member_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private BusinessMember businessMember;
 
     @Column(nullable = false)
@@ -73,23 +71,6 @@ public class Activity {
         this.longitude = longitude;
     }
 
-    public static Activity of(BusinessMember businessMember, String name, String activityPhoto, String description, String state, Integer price, String mainCategory, LocalDateTime createdAt, LocalDateTime updatedAt, String address, Double latitude, Double longitude) {
-        return Activity.builder()
-                .businessMember(businessMember)
-                .name(name)
-                .activityPhoto(activityPhoto)
-                .description(description)
-                .state(state)
-                .price(price)
-                .mainCategory(mainCategory)
-                .createdAt(createdAt)
-                .updatedAt(updatedAt)
-                .address(address)
-                .latitude(latitude)
-                .longitude(longitude)
-                .build();
-    }
-
     public void AdminUpdateActivity(String name, String activityPhoto, String description, String state, Integer price, String mainCategory, String address, Double latitude, Double longitude) {
         this.name = name;
         this.activityPhoto = activityPhoto;
@@ -113,26 +94,27 @@ public class Activity {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-    public static Activity fromDto(ActiAdmSaveReqDto dto) {
-        String address = dto.getLocation() != null ? dto.getLocation().getAddress() : null;
-        Double latitude = dto.getLocation() != null ? (double) dto.getLocation().getLatitude() : null;
-        Double longitude = dto.getLocation() != null ? (double) dto.getLocation().getLongitude() : null;
 
-        String activityPhoto = dto.getActivityPhotos() != null && !dto.getActivityPhotos().isEmpty()
-                ? String.join(",", dto.getActivityPhotos())
-                : null;
+
+    public static Activity activityFromSaveDto(ActiAdmSaveReqDto dto){
+        BusinessMember businessMember = new BusinessMember();
+        businessMember.setBusinessMemberId(Long.valueOf(1));
 
         return Activity.builder()
+                .businessMember(businessMember)
                 .name(dto.getName())
-                .activityPhoto(activityPhoto)
+                .activityPhoto(String.join(",", dto.getActivityPhotos()))
+                .description(dto.getDescription())
                 .state(dto.getState())
                 .price(dto.getPrice())
                 .mainCategory(dto.getMainCategory())
-                .address(address)
-                .latitude(latitude)
-                .longitude(longitude)
+                .address(dto.getAddress())
+                .latitude(dto.getLatitude())
+                .longitude(dto.getLongitude())
                 .build();
+
     }
+
 
 
 

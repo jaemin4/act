@@ -1,9 +1,9 @@
 package com.activity.pro.func.service;
 
-import com.activity.pro.entity.Activity;
+import com.activity.pro.entity.*;
 import com.activity.pro.func.domain.request.GetActByCategoryDto;
 import com.activity.pro.func.domain.specification.ActivitySpecification;
-import com.activity.pro.func.repository.ActivityRepository;
+import com.activity.pro.func.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
@@ -19,28 +19,35 @@ import java.util.Optional;
 public class ActivityServiceImpl implements ActivityService {
 
     private final ActivityRepository activityRepository;
+    private final SubCategoryRepository subCategoryRepository;
+    private final ReserveDateRepository reserveDateRepository;
+    private final ReserveTimeRepository reserveTimeRepository;
+    private final ReserveParticipantsRepository reserveParticipantsRepository;
 
-    // CREATE
+
     @Override
     public Activity createActivity(Activity activity) {
-        // 새로운 Activity 생성
-        Activity newActivity = Activity.of(
-                activity.getBusinessMember(),
-                activity.getName(),
-                activity.getActivityPhoto(),
-                activity.getDescription(),
-                activity.getState(),
-                activity.getPrice(),
-                activity.getMainCategory(),
-                LocalDateTime.now(), // 생성 시간
-                LocalDateTime.now(), // 업데이트 시간
-                activity.getAddress(),
-                activity.getLatitude(),
-                activity.getLongitude()
-        );
+        return activityRepository.save(activity);
+    }
 
-        // 저장 및 반환
-        return activityRepository.save(newActivity);
+    @Override
+    public SubCategory createSubCategory(SubCategory subCategory) {
+        return subCategoryRepository.save(subCategory);
+    }
+
+    @Override
+    public ReserveDate createReserveDate(ReserveDate reserveDate) {
+        return reserveDateRepository.save(reserveDate);
+    }
+
+    @Override
+    public ReserveTime createReserveTime(ReserveTime reserveTime) {
+        return reserveTimeRepository.save(reserveTime);
+    }
+
+    @Override
+    public ReserveParticipants createReserveParticipants(ReserveParticipants reserveParticipants) {
+        return reserveParticipantsRepository.save(reserveParticipants);
     }
 
     // READ (단일 조회)
@@ -88,7 +95,7 @@ public class ActivityServiceImpl implements ActivityService {
         }).orElseThrow(() -> new IllegalArgumentException("Activity not found with id: " + activityId));
     }
 
-    // DELETE
+    // DELETE1
     @Override
     public void deleteActivity(Long activityId) {
         if (activityRepository.existsById(activityId)) {
@@ -97,4 +104,7 @@ public class ActivityServiceImpl implements ActivityService {
             throw new IllegalArgumentException("Activity not found with id: " + activityId);
         }
     }
+
+
+
 }

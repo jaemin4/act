@@ -8,8 +8,11 @@ import lombok.Setter;
 @Setter
 public class SubCategory {
 
-    private Integer activityId;
 
     private Integer subCategoryId;
+
+    private String name;
+
+
 
 }

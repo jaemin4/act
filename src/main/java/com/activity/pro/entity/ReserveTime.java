@@ -1,17 +1,16 @@
 package com.activity.pro.entity;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "reserve_time")
+@Setter
 public class ReserveTime {
 
     @Id
@@ -38,4 +37,16 @@ public class ReserveTime {
                 .reserveTime(reserveTime)
                 .build();
     }
+
+    public static ReserveTime ReserveTimeFromSaveDto(Long resDateId, LocalDateTime time){
+        ReserveDate reserveDate = new ReserveDate();
+        reserveDate.setReserveDateId(resDateId);
+
+        return ReserveTime.builder()
+                .reserveDate(reserveDate)
+                .reserveTime(time)
+                .build();
+    }
+
+
 }
